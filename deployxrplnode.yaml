@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: xrpl-node
+  labels:
+    app: xrpl-node
+spec:
+  ports:
+    - port: 80
+      nodePort: 30001
+      name: ws-public
+  selector:
+    app: xrpl-node
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xrpl-node
+  labels:
+    app: xrpl-node
+spec:
+  selector:
+    matchLabels:
+      app: xrpl-node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: xrpl-node
+    spec:
+      containers:
+      - image: rahulyadav007/xrplnode:v1
+        name: xrpl-node
+        ports:
+        - containerPort: 80
+          name: ws-public
